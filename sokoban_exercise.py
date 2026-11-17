@@ -149,6 +149,22 @@ def apply_move(board, direction_key):
     vector = KEY_TO_VECTOR[direction_key]
     # TODO 1：現在の座標を取得し、次の座標を計算する。
     #           盤面内なら hero を更新する（最初は壁や箱を無視してよい）。
+    if direction_key not in KEY_TO_VECTOR:
+        return False
+    vector = KEY_TO_VECTOR[direction_key]
+
+    # 1. 次の座標を計算する
+    next_hero = next_position(board["hero"], vector)
+
+    # 2. 盤面外なら動かさずに終了
+    if not in_field(board, next_hero):
+        return False
+
+    # 3. 盤面内なら履歴を保存し、座標と歩数を更新して True を返す
+    board["past"].append((board["hero"], board["crates"].copy()))
+    board["hero"] = next_hero
+    board["steps"] += 1
+    return True
     # TODO 2：TODO 1の判定に can_enter() を組み込む。
     # TODO 3：次の位置が crates に含まれたら push_crate() を呼ぶ。
     #           箱が動かなければプレイヤーも移動してはいけない。
